@@ -3,11 +3,17 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon app.js",
+=======
+    "start": "node app.js",
+>>>>>>> 48adb129dfdc275399dd19851fadaa34ac0c50f7
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

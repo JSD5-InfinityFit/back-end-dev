@@ -3,9 +3,10 @@ import { MongoClient, ObjectId, MongoError } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
 
+
 // Initialize server
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // Initialize MongoDB
 const URI = process.env.MONGODB_URI;
@@ -17,20 +18,30 @@ const collectionName = "sandbox";
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
-// routes
+//  Allow access to different links
+app.use(function(req, res, next) {
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type, Accept,Authorization,Origin");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+  });
 
 app.get('/activities/', (req, res) =>{
     async function mongoget() {
         try {
-            await client.connect();
-            // connect to database and collection
-            const collection = client.db(databaseName).collection(collectionName);
-
-            // find activity in database
-            const activity = await collection.find({}).toArray();
-            if (activity) {
+            // Connect to the MongoDB server
+            await client.connect(URI);
+  
+            const db = client.db(databaseName);
+            const collection = db.collection('activities');
+  
+            // Query the MongoDB collection to retrieve data
+            const items = await collection.find().toArray();
+            
+            if (items) {
                 // return activity
-                res.status(200).json(activity);
+                res.json(items); // Return the retrieved data as JSON response
             } else {
                 res.status(404).json({ message: "Activity not found" });
             }
@@ -42,7 +53,6 @@ app.get('/activities/', (req, res) =>{
             await client.close();
         }
     }
-    mongoget().catch(console.dir);
 });
 
 app.post('/activities/',validateActivity, (req, res) =>{
@@ -51,17 +61,15 @@ app.post('/activities/',validateActivity, (req, res) =>{
     console.log(newActivity);
     async function mongopost() {
         try {
-            await client.connect();
-            // connect to database and collection
-            const collection = client.db(databaseName).collection(collectionName);
-
-            // insert new activity into database
-            const result = await collection.insertOne(newActivity);
-            console.log(result);
-            // return result
-            res.status(200).json(result);
+            await client.connect(URI);
+            const db = client.db(databaseName);
+            const collection = db.collection('activities');
+            await collection.insertOne(req.body) 
+            console.log(req.body)
+            res.status(201).send('Activity created successfully!');
         } catch (error) {
             console.error(error);
+            res.status(500).send('Server error');
         }
         finally {
             await client.close();
@@ -117,27 +125,31 @@ app.put('/activities/:id', (req, res) =>{
 });
 
 app.delete('/activities/:id', (req, res) =>{
-    // receive updated activity from client
-    const deletedId = req.params.id;
-    const objectId = new ObjectId(deletedId);
-    console.log(deletedId);
+   const deleteId = req.params.id;
+   const objectId = new ObjectId(deleteId);
+
+   console.log(deleteId);
     async function mongodelete() {
         try {
-            await client.connect();
-            // connect to database and collection
-            const collection = client.db(databaseName).collection(collectionName);
+            await client.connect(URI);
+            
+            const db = client.db("infinityDB");
 
-            // check if activity exists in database
-            const activityExists = await collection.findOne({ _id: objectId });
-            // delete activity in database
-            if (activityExists) {
-                const result = await collection.deleteOne({ _id: objectId });
+            const collection = db.collection("sandbox");
+
+            const query = { _id: new ObjectId(objectId) };
+
+            const check = await collection.findOne(query);
+
+            if (check) {
+                const result = await collection.deleteOne(query);
                 // return result
                 res.status(200).json(result);
             }
             else {
                 res.status(404).json({ error: "Activity not found" });
             }
+            res.status(201).send(`Document deleted with id: ${deleteId}`)
         } catch (error) {
             console.error(error);
         }
@@ -147,7 +159,6 @@ app.delete('/activities/:id', (req, res) =>{
     }
     mongodelete().catch(console.dir);
 });
-
 
 // error handling middleware
 app.use((err, req, res, next) => {
