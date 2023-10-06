@@ -25,6 +25,7 @@ app.get('/activities/', (req, res) =>{
         try {
             await client.connect();
             
+            
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +55,14 @@ app.put('/activities/:id', (req, res) =>{
     async function mongoput() {
         try {
             await client.connect();
+
+            const database = client.db('infinityDB');
+            const userActivity = database.collection("sandbox");
+            // Retrieve product information based on the product ID
+            const activityInfo = await userActivity.findOne({ _id: 9 });
             
+            console.log(activityInfo)
+
         } catch (error) {
             console.error(error);
         }
