@@ -1,7 +1,10 @@
 import express from "express";
-import { MongoClient, ObjectId, MongoError } from "mongodb";
 import mongoose from 'mongoose';
+import morgan from "morgan";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
+
 dotenv.config();
 
 // Define Mongoose schema for activities collection
@@ -11,8 +14,8 @@ const activitySchema = new mongoose.Schema({
     description: { type: String, required: false },
     duration: { type: Number, required: true },
     date: { type: Date, required: true },
-    imageURL: { type: String, required: true },
-    userID: { type: String, required: true }
+    imageURL: { type: String, required: false },
+    userID: { type: String, required: false }
 });
 
 const Activities = mongoose.model('Activities', activitySchema);
@@ -27,6 +30,11 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
 const app = express();
 const port = 3000;
 
+app.use(helmet());
+app.use(morgan('dev'));
+app.use(cors());
+app.use(express.static('public'));
+app.use(express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,6 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
     res.setHeader("Access-Control-Allow-Credentials", true);
     next();
 });
@@ -45,6 +54,16 @@ app.get('/activities/', async (req, res) => {
     try {
         const activities = await Activities.find();
         res.json(activities);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/activities/:id', async (req, res) => {
+    try {
+        const activity = await Activities.findById(req.params.id);
+        res.json(activity);
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
