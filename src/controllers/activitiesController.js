@@ -82,9 +82,14 @@ export const updateActivity = async (req, res) => {
 // Delete an activity
 export const deleteActivity = async (req, res) => {
     try {
-        await res.activity.remove();
-        res.json({ message: 'Activity deleted' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const deletedActivity = await Activities.findByIdAndDelete(req.params.id);
+        if (!deletedActivity) {
+            res.status(404).json({ message: "Activity not found" });
+        } else {
+            res.status(200).json(deletedActivity);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
     }
 };
