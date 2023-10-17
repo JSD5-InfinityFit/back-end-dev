@@ -5,7 +5,7 @@ import Activities from "../models/activity.js";
 export const getAllActivities = async (req, res) => {
     try {
         const activities = await Activities.find();
-        if (activity == null) {
+        if (activities == null) {
             return res.status(404).json({ message: 'Activity not found' });
         }
         res.json(activities);
@@ -18,6 +18,9 @@ export const getAllActivities = async (req, res) => {
 export const getActivityById = async (req, res) => {
     try {
         const activity = await Activities.findById(req.params.id);
+        if (activity == null) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
         res.json(activity);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -84,20 +87,4 @@ export const deleteActivity = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
-
-// Middleware function to get activity by ID
-export const getActivity = async (req, res, next) => {
-    let activity;
-    try {
-        activity = await Activities.findById(req.params.id);
-        if (activity == null) {
-            return res.status(404).json({ message: 'Activity not found' });
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-
-    res.activity = activity;
-    next();
 };
