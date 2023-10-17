@@ -5,6 +5,9 @@ import Activities from "../models/activity.js";
 export const getAllActivities = async (req, res) => {
     try {
         const activities = await Activities.find();
+        if (activity == null) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
         res.json(activities);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -13,7 +16,12 @@ export const getAllActivities = async (req, res) => {
 
 // Get one activity
 export const getActivityById = async (req, res) => {
-    res.json(res.activity);
+    try {
+        const activity = await Activities.findById(req.params.id);
+        res.json(activity);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
 // Create an activity
