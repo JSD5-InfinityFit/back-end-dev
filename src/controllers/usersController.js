@@ -9,6 +9,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as LinkedInStrategy } from 'passport-linkedin-oauth2';
 dotenv.config();
+
 // Configure Facebook strategy
 passport.use(
   new FacebookStrategy(
@@ -45,6 +46,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/auth/google/callback",
+      scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
