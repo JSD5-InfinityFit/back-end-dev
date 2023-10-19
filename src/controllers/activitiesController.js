@@ -29,15 +29,7 @@ export const getActivityById = async (req, res) => {
 
 // Create an activity
 export const createActivity = async (req, res) => {
-    const activity = new Activities({
-        name: req.body.name,
-        type: req.body.type,
-        description: req.body.description,
-        duration: req.body.duration,
-        date: req.body.date,
-        imageURL: req.body.imageURL,
-        userID: req.body.userID
-    });
+    const activity = new Activities(req.body);
 
     try {
         const newActivity = await activity.save();
