@@ -37,7 +37,7 @@ export const loginUsersController = async (req, res) => {
         const userObj = new User(req.body);
         console.log(userObj);
         const user = await User.findOneAndUpdate(
-          // { userEmail: userObj.userEmail },
+          { userEmail: userObj.userEmail },
           { new: true }
         );
         if (user) {
@@ -69,33 +69,49 @@ export const loginUsersController = async (req, res) => {
         res.status(500).send("Server Error!");
       }
 }
+export const getCurrentUserController = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id }).select(
+      "-userPassword"
+    );
+    console.log(user);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(400).send("User not found!!");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error!");
+  }
+}
 
 export const updateUsersController = async (req, res) => {
-    try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-          new: true,
-        });
-        if (!updatedUser) {
-          res.status(404).json({ message: "Activity not found" });
-        } else {
-          res.status(200).json(updatedUser);
-        }
-      } catch (err) {
-        console.log(err);
-        res.status(500).send("Server Error!");
-      }
+  try {
+    let {id, password} = req.body.values
+    // gen salt
+    const salt = await bcrypt.genSalt(10);
+    // encrypt
+    let enPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { password: enPassword }
+    );
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error!");
+  }
 }
 
 export const deleteUsersController = async (req, res) => {
-    try {
-        const deletedUser = await User.findByIdAndDelete(req.params.id);
-        if (!deletedUser) {
-          res.status(404).json({ message: "Activity not found" });
-        } else {
-          res.status(200).json(deletedUser);
-        }
-      } catch (err) {
-        console.log(err);
-        res.status(500).send("Server Error!");
-      }
+  try {
+    const id = req.params.id;
+    const user = await User.findOneAndDelete({ _id: id });
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error!");
+  }
 }
