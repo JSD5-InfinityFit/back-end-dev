@@ -237,6 +237,22 @@ export const loginUsersController = async (req, res) => {
       });
     } else {
       return res.status(400).send("User not found!!");
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(500).send("Server Error!");
+      }
+}
+export const getCurrentUserController = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id }).select(
+      "-userPassword"
+    );
+    console.log(user);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(400).send("User not found!!");
     }
   } catch (err) {
     console.log(err);
@@ -281,6 +297,7 @@ export const updateUsersController = async (req, res) => {
  */
 export const deleteUsersController = async (req, res) => {
   try {
+
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser) {
       res.status(404).json({ message: "Activity not found" });
