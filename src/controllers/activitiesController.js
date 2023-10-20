@@ -41,6 +41,7 @@ export const createActivity = async (req, res) => {
 
 // Update an activity
 export const updateActivity = async (req, res) => {
+    res.send(req.body)
     if (req.body.name != null) {
         res.activity.name = req.body.name;
     }

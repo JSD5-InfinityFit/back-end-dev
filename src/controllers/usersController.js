@@ -1,5 +1,4 @@
-
-import User from "../models/User.js";
+import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -146,9 +145,8 @@ export const registerUsersController = async (req, res) => {
     if (user) {
       return res.status(400).send("User Already Exists");
     }
-
-    // Hash password
     const salt = await bcrypt.genSalt(10);
+    // encrypt
     newUser.userPassword = await bcrypt.hash(newUser.userPassword, salt);
 
     // Save user
@@ -164,7 +162,9 @@ export const registerUsersController = async (req, res) => {
       expiresIn: "1h",
     });
 
+    console.log("Register Success");
     res.json({ token });
+    
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error!");
@@ -211,7 +211,7 @@ export const loginUsersController = async (req, res) => {
     const userObj = new User(req.body);
     console.log(userObj);
     const user = await User.findOneAndUpdate(
-      // { userEmail: userObj.userEmail },
+      { userEmail: userObj.userEmail },
       { new: true }
     );
     if (user) {
@@ -237,18 +237,18 @@ export const loginUsersController = async (req, res) => {
       });
     } else {
       return res.status(400).send("User not found!!");
-        }
-      } catch (err) {
-        console.log(err);
-        res.status(500).send("Server Error!");
-      }
-}
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error!");
+  }
+};
 export const getCurrentUserController = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id }).select(
       "-userPassword"
     );
-    console.log(user);
+    // console.log(user);
     if (user) {
       res.send(user);
     } else {
@@ -273,14 +273,30 @@ export const getCurrentUserController = async (req, res) => {
  */
 export const updateUsersController = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!updatedUser) {
-      res.status(404).json({ message: "Activity not found" });
-    } else {
-      res.status(200).json(updatedUser);
-    }
+    const {
+      userEmail,
+      userPassword,
+      userBiologicalGender,
+      userBD,
+      userWeight,
+      userHeight,
+    } = req.body;
+    // gen salt
+    const salt = await bcrypt.genSalt(10);
+    // encrypt
+    let enPassword = await bcrypt.hash(userPassword, salt);
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        userEmail,
+        userPassword: enPassword,
+        userBiologicalGender,
+        userBD,
+        userWeight,
+        userHeight,
+      }
+    );
+    res.send("User Updated");
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error!");
