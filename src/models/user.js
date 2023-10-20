@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
     {
-      userEmail: { type: String, required: true },
+      facebookId: { type: String, required: false },
+      userEmail: { type: String, required: false },
       userPassword: { type: String, required: false },
       userBiologicalGender: { type: String, required: false },
       userBD: { type: String, required: false },
