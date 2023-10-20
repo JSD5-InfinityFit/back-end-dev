@@ -122,7 +122,10 @@ export const deleteUsersController = async (req, res) => {
   try {
     const id = req.params.id;
     const user = await User.findOneAndDelete({ _id: id });
-    res.send(user);
+    if (!user) {
+      return res.send("No have user or deleted user");
+    }
+    res.status(200).send(user);
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error!");
