@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 export const getUsersController = async (req, res) => {
@@ -18,7 +18,7 @@ export const registerUsersController = async (req, res) => {
   try {
     // Check user
     const newUser = new User(req.body);
-    console.log(newUser);
+    // console.log(newUser);
     let user = await User.findOne({ userEmail: newUser.userEmail });
     if (user) {
       return res.status(400).send("User Already Exists");
@@ -42,7 +42,6 @@ export const registerUsersController = async (req, res) => {
 
     console.log("Register Success");
     res.json({ token });
-    
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error!");
@@ -92,7 +91,7 @@ export const getCurrentUserController = async (req, res) => {
     const user = await User.findOne({ _id: req.params.id }).select(
       "-userPassword"
     );
-    console.log(user);
+    // console.log(user);
     if (user) {
       res.send(user);
     } else {
@@ -117,18 +116,32 @@ export const updateUsersController = async (req, res) => {
     // gen salt
     const salt = await bcrypt.genSalt(10);
     // encrypt
-    let enPassword = await bcrypt.hash(userPassword, salt);
-    const user = await User.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        userEmail,
-        userPassword: enPassword,
-        userBiologicalGender,
-        userBD,
-        userWeight,
-        userHeight,
-      }
-    );
+    if (!userPassword) {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          userEmail,
+          userBiologicalGender,
+          userBD,
+          userWeight,
+          userHeight,
+        }
+      );
+    } else {
+      let enPassword = await bcrypt.hash(userPassword, salt);
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          userEmail,
+          userPassword: enPassword,
+          userBiologicalGender,
+          userBD,
+          userWeight,
+          userHeight,
+        }
+      );
+    }
+
     res.send("User Updated");
   } catch (err) {
     console.log(err);
@@ -138,7 +151,6 @@ export const updateUsersController = async (req, res) => {
 
 export const deleteUsersController = async (req, res) => {
   try {
-
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser) {
       res.status(404).json({ message: "Activity not found" });
