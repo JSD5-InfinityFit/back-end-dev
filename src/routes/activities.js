@@ -1,6 +1,6 @@
 // routes/activities.js
 import express from "express";
-import { getAllActivities, getActivityById, createActivity, updateActivity, deleteActivity } from "../controllers/activitiesController.js";
+import { getAllActivities, getActivityById, createActivity, updateActivity, deleteActivity,getActivityByUser } from "../controllers/activitiesController.js";
 
 const router = express.Router();
 
@@ -18,5 +18,8 @@ router.patch('/:id', updateActivity);
 
 // Delete an activity
 router.delete('/:id', deleteActivity);
+
+//dashboard
+router.get('/users/:id', getActivityByUser);
 
 export default router;

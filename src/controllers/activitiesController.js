@@ -86,3 +86,21 @@ export const deleteActivity = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+
+//Dashboard
+export const getActivityByUser = async (req, res) => {
+    try {
+
+        const userId = req.params.id; //get user id from params
+        const activities = await Activities.findOne({ userId });
+        if (!activities) {
+            res.status(404).json({ message: 'Activity not found' });
+        } else {
+            res.status(200).json(activities);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Server error');
+    }
+};
