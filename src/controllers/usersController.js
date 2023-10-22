@@ -51,7 +51,7 @@ export const registerUsersController = async (req, res) => {
 export const loginUsersController = async (req, res) => {
   try {
     const userObj = new User(req.body);
-    console.log(userObj);
+    // console.log(userObj);
     const user = await User.findOneAndUpdate(
       { userEmail: userObj.userEmail },
       { new: true }
