@@ -119,7 +119,7 @@ passport.use(
     {
       clientID: FACEBOOK_APP_ID,
       clientSecret: FACEBOOK_APP_SECRET,
-      callbackURL: BACKEND_URL+"/auth/facebook/callback",
+      callbackURL: "https://infinity-fit-backend.onrender.com/auth/facebook/callback",
       profileFields: ["id", "emails", "name"],
     },
     async (accessToken, refreshToken, profile, done) => {
