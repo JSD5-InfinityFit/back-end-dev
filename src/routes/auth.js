@@ -16,7 +16,11 @@ const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
+const LINKEDIN_CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET;
 const secret = process.env.JWT_SECRET;
+const BACKEND_URL = process.env.BACKEND_URL;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // passport strategy
 passport.use(
@@ -24,7 +28,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: BACKEND_URL+"/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       console.log(profile);
@@ -39,7 +43,7 @@ passport.use(
           user = await newUser.save();
         }
         const token = jwt.sign({ userId: user._id }, secret);
-        done(null, user);
+        done(null, user, token);
       } catch (err) {
         console.log(err);
         done(err, false);
@@ -52,9 +56,9 @@ passport.use(
 passport.use(
   new GitHubStrategy(
     {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/github/callback",
+      clientID: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      callbackURL: BACKEND_URL+"/auth/github/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       console.log(profile);
@@ -82,9 +86,9 @@ passport.use(
 passport.use(
   new LinkedInStrategy(
     {
-      clientID: process.env.LINKEDIN_CLIENT_ID,
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/linkedin/callback",
+      clientID: LINKEDIN_CLIENT_ID,
+      clientSecret: LINKEDIN_CLIENT_SECRET,
+      callbackURL: BACKEND_URL+"/auth/linkedin/callback",
       scope: ["r_emailaddress", "r_liteprofile"],
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -113,9 +117,9 @@ passport.use(
 passport.use(
   new FacebookStrategy(
     {
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "http://localhost:3000/auth/facebook/callback",
+      clientID: FACEBOOK_APP_ID,
+      clientSecret: FACEBOOK_APP_SECRET,
+      callbackURL: BACKEND_URL+"/auth/facebook/callback",
       profileFields: ["id", "emails", "name"],
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -163,8 +167,8 @@ socialRouter.get(
 socialRouter.get(
   "/google/callback",
   passport.authenticate("google", { 
-    successRedirect: "http://localhost:5173/",
-    failureRedirect: "http://localhost:5173//login" 
+    successRedirect: FRONTEND_URL+"/home",
+    failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
     const { user, token } = req.user;
@@ -180,8 +184,9 @@ socialRouter.get(
 socialRouter.get(
   "/facebook/callback",
   passport.authenticate("facebook", { 
-    successRedirect: "http://localhost:5173/",
-    failureRedirect: "http://localhost:5173//login" }),
+    successRedirect: FRONTEND_URL+"/home",
+    failureRedirect: FRONTEND_URL+"/register"
+  }),
   (req, res) => {
     const { user, token } = req.user;
     res.json({ user, token });
@@ -196,8 +201,9 @@ socialRouter.get(
 socialRouter.get(
   "/github/callback",
   passport.authenticate("github", { 
-    successRedirect: "http://localhost:5173/",
-    failureRedirect: "http://localhost:5173//login" }),
+    successRedirect: FRONTEND_URL+"/home",
+    failureRedirect: FRONTEND_URL+"/register"
+  }),
   (req, res) => {
     const { user, token } = req.user;
     res.json({ user, token });
@@ -209,7 +215,7 @@ socialRouter.post("/logout", function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.redirect("http://localhost:5173/");
+    res.redirect(FRONTEND_URL);
   });
 });
 
