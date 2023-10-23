@@ -10,13 +10,14 @@ import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import activitiesRouter from "./routes/activities.js";
 import usersRouter from './routes/users.js';
-import socialRouter from "./routes/auth.js";
+// import socialRouter from "./routes/auth.js";
 
 dotenv.config();
 
+
 // Set up Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Connect to MongoDB server
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -52,7 +53,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Set up routes
-app.use('/auth', socialRouter);
+// app.use('/auth', socialRouter);
 app.use('/users', usersRouter);
 app.use('/activities', activitiesRouter);
 
