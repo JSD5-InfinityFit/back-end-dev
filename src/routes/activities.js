@@ -1,5 +1,6 @@
 // routes/activities.js
 import express from "express";
+import multer from "multer";
 import { 
     getAllActivities,
     getActivityById, 
@@ -7,6 +8,7 @@ import {
     updateActivity, 
     deleteActivity,
     getActivityByUser,
+    getActivitySummaryByUser,
 } from "../controllers/activitiesController.js";
 
 const router = express.Router();
