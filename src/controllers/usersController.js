@@ -18,7 +18,7 @@ export const registerUsersController = async (req, res) => {
   try {
     // Check user
     const newUser = new User(req.body);
-    // console.log(newUser);
+
     let user = await User.findOne({ userEmail: newUser.userEmail });
     if (user) {
       return res.status(400).send("User Already Exists");
@@ -51,7 +51,7 @@ export const registerUsersController = async (req, res) => {
 export const loginUsersController = async (req, res) => {
   try {
     const userObj = new User(req.body);
-    // console.log(userObj);
+
     const user = await User.findOneAndUpdate(
       { userEmail: userObj.userEmail },
       { new: true }
@@ -91,7 +91,6 @@ export const getCurrentUserController = async (req, res) => {
     const user = await User.findOne({ _id: req.params.id }).select(
       "-userPassword"
     );
-    // console.log(user);
     if (user) {
       res.send(user);
     } else {

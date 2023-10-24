@@ -112,3 +112,20 @@ export const getActivityByUser = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+export const getActivitySummaryByUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const summary = await Activities.aggregate([
+            
+        ]);
+        if (!summary) {
+            res.status(404).json({ message: 'Activity not found' });
+        } else {
+            res.status(200).json(summary);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Server error');
+    }
+}
