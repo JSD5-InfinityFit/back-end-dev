@@ -17,7 +17,7 @@ dotenv.config();
 
 // Set up Express app
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB server
 const MONGODB_URI = process.env.MONGODB_URI;
