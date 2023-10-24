@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import activitiesRouter from "./routes/activities.js";
 import usersRouter from './routes/users.js';
-// import socialRouter from "./routes/auth.js";
+import socialRouter from "./routes/auth.js";
 
 dotenv.config();
 
@@ -47,7 +47,7 @@ app.use(session({
         collection: 'sessions',
     })
 }));
-  
+
 // Initialize Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
