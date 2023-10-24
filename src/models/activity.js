@@ -9,7 +9,8 @@ const activitySchema = new mongoose.Schema({
     date: { type: Date, required: true },
     imageURL: { type: String, required: true },
     userID: { type: String, required: false },
-    imgFile: { type: Buffer, required: false}
+    img: { type: Buffer, required: false},
+    imgType: { type: String, required: false}
 });
 
 const Activities = mongoose.model('Activities', activitySchema);

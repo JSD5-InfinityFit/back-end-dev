@@ -1,12 +1,6 @@
 // controllers/activitiesController.js
 import Activities from "../models/activity.js";
 
-
-
-
-
-
-
 // Get all activities
 export const getAllActivities = async (req, res) => {
     try {
@@ -35,13 +29,19 @@ export const getActivityById = async (req, res) => {
 
 // Create an activity
 export const createActivity = async (req, res) => {
-    console.log(req.body)
-    const activity = new Activities(req.body);
+    let activity
+    if(req.file){
+        const imageBuffer = req.file.buffer;
+        activity = new Activities({...req.body, img: imageBuffer});
+    } else {
+        activity = new Activities(req.body);
+    }
 
     try {
         const newActivity = await activity.save();
         res.status(201).json(newActivity);
     } catch (err) {
+        console.log(err)
         res.status(400).json({ message: err.message });
     }
     
