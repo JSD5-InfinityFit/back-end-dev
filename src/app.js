@@ -53,7 +53,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Set up routes
-// app.use('/auth', socialRouter);
+app.use('/auth', socialRouter);
 app.use('/users', usersRouter);
 app.use('/activities', activitiesRouter);
 
