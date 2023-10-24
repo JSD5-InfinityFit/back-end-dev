@@ -7,8 +7,10 @@ const activitySchema = new mongoose.Schema({
     description: { type: String, required: false },
     duration: { type: Number, required: true },
     date: { type: Date, required: true },
-    imageURL: { type: String, required: false },
-    userID: { type: String, required: false }
+    imageURL: { type: String, required: true },
+    userID: { type: String, required: false },
+    img: { type: Buffer, required: false},
+    imgType: { type: String, required: false}
 });
 
 const Activities = mongoose.model('Activities', activitySchema);
