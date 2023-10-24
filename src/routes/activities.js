@@ -11,6 +11,11 @@ import {
 
 const router = express.Router();
 
+// Configure multer for file uploads
+const storage = multer.memoryStorage(); // Store file in memory as a Buffer
+const upload = multer({ storage });
+
+
 // Get all activities
 router.get('/', getAllActivities);
 
@@ -18,7 +23,8 @@ router.get('/', getAllActivities);
 router.get('/:id', getActivityById);
 
 // Create an activity
-router.post('/', createActivity);
+// Intercept the request and treat the req.img field as a file to prepare it for uploading
+router.post('/', upload.single('img'), createActivity);
 
 // Update an activity
 router.patch('/:id', updateActivity);
