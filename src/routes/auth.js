@@ -164,7 +164,7 @@ socialRouter.get(
 socialRouter.get(
   "/google/callback",
   passport.authenticate("google", { 
-    successRedirect: FRONTEND_URL+'/login',
+    successRedirect: FRONTEND_URL+'/home',
     failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
@@ -181,7 +181,7 @@ socialRouter.get(
 socialRouter.get(
   "/facebook/callback",
   passport.authenticate("facebook", { 
-    successRedirect: FRONTEND_URL+'/login',
+    successRedirect: FRONTEND_URL+'/home',
     failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
@@ -198,7 +198,7 @@ socialRouter.get(
 socialRouter.get(
   "/github/callback",
   passport.authenticate("github", { 
-    successRedirect: FRONTEND_URL+'/login',
+    successRedirect: FRONTEND_URL+'/home',
     failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
