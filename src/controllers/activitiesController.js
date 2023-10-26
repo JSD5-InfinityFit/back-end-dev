@@ -101,7 +101,7 @@ export const getActivityByUser = async (req, res) => {
     try {
 
         const userId = req.params.id; //get user id from params
-        const activities = await Activities.findOne({ userId });
+        const activities = await Activities.find({ userID : userId });
         if (!activities) {
             res.status(404).json({ message: 'Activity not found' });
         } else {
@@ -117,6 +117,7 @@ export const getActivitySummaryByUser = async (req, res) => {
     try {
         const userId = req.params.id;
         const summary = await Activities.aggregate([
+            // aggregate activity from userID and get total duration and total duration by activitytype
             
         ]);
         if (!summary) {
