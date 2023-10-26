@@ -37,13 +37,12 @@ passport.use(
         let user = await User.findOne({ userEmail: email });
         if (!user) {
           const newUser = new User({
-            userName: profile.displayName,
             userEmail: email,
           });
           user = await newUser.save();
         }
         const token = jwt.sign({ userId: user._id }, secret);
-        done(null, user, token);
+        done(null, token);
       } catch (err) {
         console.log(err);
         done(err, false);
@@ -67,13 +66,12 @@ passport.use(
         let user = await User.findOne({ userEmail: email });
         if (!user) {
           const newUser = new User({
-            userName: profile.displayName,
             userEmail: email,
           });
           user = await newUser.save();
         }
         const token = jwt.sign({ userId: user._id }, secret);
-        done(null, user);
+        done(null, token);
       } catch (err) {
         console.log(err);
         done(err, false);
@@ -98,13 +96,12 @@ passport.use(
         let user = await User.findOne({ userEmail: email });
         if (!user) {
           const newUser = new User({
-            userName: profile.displayName,
             userEmail: email,
           });
           user = await newUser.save();
         }
         const token = jwt.sign({ userId: user._id }, secret);
-        done(null, user);
+        done(null, token);
       } catch (err) {
         console.log(err);
         done(err, false);
@@ -134,7 +131,7 @@ passport.use(
           user = await newUser.save();
         }
         const token = jwt.sign({ userId: user._id }, secret);
-        done(null, user);
+        done(null, token);
       } catch (err) {
         console.log(err);
         done(err, false);
@@ -167,12 +164,12 @@ socialRouter.get(
 socialRouter.get(
   "/google/callback",
   passport.authenticate("google", { 
-    successRedirect: FRONTEND_URL+"/home",
+    successRedirect: FRONTEND_URL+'/login',
     failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
-    const { user, token } = req.user;
-    res.json({ user, token });
+    const { token } = req.user;
+    res.json({ token });
   }
 );
 
@@ -184,12 +181,12 @@ socialRouter.get(
 socialRouter.get(
   "/facebook/callback",
   passport.authenticate("facebook", { 
-    successRedirect: FRONTEND_URL+"/home",
+    successRedirect: FRONTEND_URL+'/login',
     failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
-    const { user, token } = req.user;
-    res.json({ user, token });
+    const { token } = req.user;
+    res.json({ token });
   }
 );
 
@@ -201,12 +198,12 @@ socialRouter.get(
 socialRouter.get(
   "/github/callback",
   passport.authenticate("github", { 
-    successRedirect: FRONTEND_URL+"/home",
+    successRedirect: FRONTEND_URL+'/login',
     failureRedirect: FRONTEND_URL+"/register"
   }),
   (req, res) => {
-    const { user, token } = req.user;
-    res.json({ user, token });
+    const { token } = req.user;
+    res.json({ token });
   }
 );
 
